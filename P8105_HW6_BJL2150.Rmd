@@ -35,31 +35,45 @@ two_homicide_citystate = homicide_data %>%
   mutate(solved = as.numeric(disposition == "Closed by arrest")) %>% 
   count(city_state)  
 
-# This is the working dataframe where the 4 citis were filtered out successfully.
+# This is the working dataframe where the 4 cities were filtered out successfully.
 
 homicide_citystate = homicide_data %>%
   mutate(city_state = str_c(city, ", " , state)) %>% 
   mutate(solved = as.numeric(disposition == "Closed by arrest")) %>% 
   filter(!city_state %in% c("Dallas, TX", "Phoenix, AZ", "Kansas City, MO", "Tulsa, AL")) %>%
-  select(city_state, victim_race, solved, victim_age, victim_sex) %>%
+  select(city_state, victim_race, solved, victim_age, victim_sex, disposition) %>%
   mutate(race = case_when(victim_race == "White" ~ "white",
                           victim_race != "White" ~ "non-white")) %>%
   mutate(victim_age = as.numeric(victim_age)) %>%
   mutate(race = fct_relevel(race, "white")) %>%
-  filter(race != "" & victim_age != "") 
+  filter(race != "" & victim_age != "")
+
+
+hw6_homicide_citystate = homicide_citystate %>%
+  group_by(city_state) %>%
+  summarize(total_disposition = n(),
+            hom_solved = sum (solved == "1"))
 ```
+
+hom_unsolved = sum(resolution == "unsolved"))
 ## Using the 'glm' function
 
-```{r}
-logistic_homicide = glm(solved ~ victim_age + race + victim_sex, data = homicide_citystate, family = binomial()) %>%
-  broom::tidy()
+
+baltimore = homicide_citystate %>%
+  filter(city_state == "Baltimore, MD")
+
+logistic_homicide = glm(solved ~ victim_age + race + victim_sex, data = baltimore, family = binomial()) %>%
+  broom::tidy() %>%
+  prop.test(x = )
+  mutate(new = map2(.x = estimate, .y = , ~prop.test(x = .x, n = .y)),
+         tidy_tests = map(prop_tests, broom::tidy)) 
 ```
 
 
 ```{r}
 # Trying something out
 
-hw6_homicide_citystate = homicide_data %>%
+twohw6_homicide_citystate = homicide_data %>%
 mutate(city_state = str_c(city, ", " ,state)) %>%
 mutate(solved = as.numeric(disposition == "Closed by arrest"))
 ```
