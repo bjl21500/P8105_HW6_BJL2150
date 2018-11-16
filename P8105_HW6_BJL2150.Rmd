@@ -26,7 +26,7 @@ read_csv(file = "./homicidedata.csv")
 The homicide_data  provides information on the numbers of homicides committed within fifty large U.S. cities. Within the dataset, the observations included are the vitcims' first and last name, age, race, city and state that the event transpired in as well as the disposition. The disposition in this context refers to the result of the homicide event. In other words, was the case closed, an arrest made, unsolved, et cetera. 
 
 ```{r}
-# Making of the new variable 'city_state'. Also, created a binary variable from disposition and named this new observation 'solved'.
+# Making of the new variable 'city_state'. Also, created a binary variable from disposition and named this new observation 'solved'. Where 1 = "Closed by arrest" and = "Open/ no arrest" and "Closed withou arrest".
 
 # Using this dataframe to count how many states are in the original dataset prior to filtering out the 4 city_state observations. 
 
@@ -35,7 +35,7 @@ two_homicide_citystate = homicide_data %>%
   mutate(solved = as.numeric(disposition == "Closed by arrest")) %>% 
   count(city_state)  
 
-# This is the working dataframe where the 4 cities were filtered out successfully.
+# This is the working dataframe where the 4 cities were filtered out successfully. The 
 
 homicide_citystate = homicide_data %>%
   mutate(city_state = str_c(city, ", " , state)) %>% 
@@ -56,14 +56,22 @@ hw6_homicide_citystate = homicide_citystate %>%
 ```
 
 hom_unsolved = sum(resolution == "unsolved"))
-## Using the 'glm' function
 
-
+```{r}
 baltimore = homicide_citystate %>%
   filter(city_state == "Baltimore, MD")
 
+## Using the 'glm' function
+
 logistic_homicide = glm(solved ~ victim_age + race + victim_sex, data = baltimore, family = binomial()) %>%
   broom::tidy() %>%
+ mutate(OR = exp(estimate)) 
+```
+
+%>%
+  confint.default(estimate)
+```
+
   prop.test(x = )
   mutate(new = map2(.x = estimate, .y = , ~prop.test(x = .x, n = .y)),
          tidy_tests = map(prop_tests, broom::tidy)) 
