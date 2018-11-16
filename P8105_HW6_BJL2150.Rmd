@@ -11,3 +11,18 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
+```{r}
+# Reading in the homicide data set
+homicide_data = read_csv(file = "./homicidedata.csv")
+```
+
+
+
+
+```{r}
+# Making of the new variable 'city_state'.
+
+homicide_citystate = homicide_data %>%
+  mutate(city_state = str_c(city, ", " , state)) 
+```
+
