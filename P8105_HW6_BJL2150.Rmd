@@ -17,12 +17,20 @@ homicide_data = read_csv(file = "./homicidedata.csv")
 ```
 
 
+### Description of the homicide dataset:
 
+The homicide_data  provides information on the numbers of homicides committed within fifty large U.S. cities. Within the dataset, the observations included are the vitcims' first and last name, age, race, city and state that the event transpired in as well as the disposition. The disposition in this context refers to the result of the homicide event. In other words, was the case closed, an arrest made, unsolved, et cetera. 
 
 ```{r}
-# Making of the new variable 'city_state'.
+# Making of the new variable 'city_state'. Also, created a binary variable from disposition and named this new observation 'resolved'.
 
 homicide_citystate = homicide_data %>%
-  mutate(city_state = str_c(city, ", " , state)) 
+  mutate(city_state = str_c(city, ", " , state)) %>%
+  mutate(solved = as.numeric(disposition == "Closed by arrest"))
+
+
+# Used this function to determine th unique observations within 'disposition'.
+
+unique(homicide_citystate$disposition)
 ```
 
