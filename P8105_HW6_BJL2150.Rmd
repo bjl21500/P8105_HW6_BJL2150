@@ -13,8 +13,11 @@ library(tidyverse)
 
 ```{r}
 # Reading in the homicide data set
-homicide_data = read_csv(file = "./homicidedata.csv")
+homicide_data = read_csv("./homicidedata.csv", na = c("", "NA", "Unknown")) 
 ```
+  
+
+read_csv(file = "./homicidedata.csv")
 
 
 ### Description of the homicide dataset:
@@ -41,7 +44,11 @@ homicide_citystate = homicide_data %>%
                              disposition == "Open/No arrest"        ~ "unsolved",
                              disposition == "Closed by arrest"      ~ "solved")) %>% 
   filter(!city_state %in% c("Dallas, TX", "Phoenix, AZ", "Kansas City, MO", "Tulsa, AL")) %>%
-  select(city_state, victim_race, outcome, victim_age)
+  select(city_state, victim_race, outcome, victim_age) %>%
+  mutate(race = case_when(victim_race == "White" ~ "white",
+                          victim_race != "White" ~ "non-white")) %>%
+  mutate(victim_age = as.numeric(victim_age)) %>%
+  filter(race != "" & victim_age != "")
   
 ```
 
