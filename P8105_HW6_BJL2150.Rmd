@@ -1,0 +1,13 @@
+---
+title: "P8105_HW6_BJL2150"
+author: "Briana Lettsome"
+date: "November 16, 2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
