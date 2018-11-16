@@ -9,6 +9,7 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
+library(dplyr)
 ```
 
 ```{r}
@@ -44,17 +45,35 @@ homicide_citystate = homicide_data %>%
                              disposition == "Open/No arrest"        ~ "unsolved",
                              disposition == "Closed by arrest"      ~ "solved")) %>% 
   filter(!city_state %in% c("Dallas, TX", "Phoenix, AZ", "Kansas City, MO", "Tulsa, AL")) %>%
-  select(city_state, victim_race, outcome, victim_age) %>%
+  select(city_state, victim_race, outcome, victim_age, victim_sex) %>%
   mutate(race = case_when(victim_race == "White" ~ "white",
                           victim_race != "White" ~ "non-white")) %>%
   mutate(victim_age = as.numeric(victim_age)) %>%
-  filter(race != "" & victim_age != "")
-  
+  filter(race != "" & victim_age != "") 
+```
+## Using the 'glm' function
+
+
+logistic_homicide = glm(outcome ~ victim_age + race + victim_sex, data = homicide_citystate, family = binomial()) %>%
+  broom::tidy()
 ```
 
-hw6_homicide_citystate = homicide_data %>%
+
+
+hw6_homicide_citystate = homicide_data
+ homicide_citystate = homicide_data %>%
   mutate(city_state = str_c(city, ", " , state)) %>%
-  outcome = case_when(disposition == "Closed without arrest" ~ "unsolved")
+  mutate(solved = as.numeric(disposition == "Closed by arrest")) 
+         
+  filter(!city_state %in% c("Dallas, TX", "Phoenix, AZ", "Kansas City, MO", "Tulsa, AL")) %>%
+  select(city_state, victim_race, outcome, victim_age, victim_sex) %>%
+  mutate(race = case_when(victim_race == "White" ~ "white",
+                          victim_race != "White" ~ "non-white")) %>%
+  mutate(victim_age = as.numeric(victim_age)) %>%
+  filter(race != "" & victim_age != "") 
+
+
+
     
 
 %>% filter(!city_state %in% c("Dallas, TX", "Phoenix, AZ", "Kansas City, MO", "Tulsa, AL")) %>%
