@@ -36,14 +36,13 @@ two_homicide_citystate = homicide_data %>%
 homicide_citystate = homicide_data %>%
   mutate(city_state = str_c(city, ", " , state)) %>%
   mutate(solved = as.numeric(disposition == "Closed by arrest")) %>% filter(!city_state %in% c("Dallas, TX", "Phoenix, AZ", "Kansas City, MO", "Tulsa, AL")) %>%
-  select(city_state, victim_race, solved, victim_age)
+  select(city_state, victim_race, solved, victim_age) 
+```
+%>%
+  mutate(race = (victim_race == "White"))
   
 ```
  
-
-  
-
-
 unique(homicide_citystate$city_state)
 
 
