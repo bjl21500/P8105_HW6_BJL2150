@@ -12,6 +12,8 @@ library(tidyverse)
 library(dplyr)
 ```
 
+# Problem 1
+
 ```{r}
 # Reading in the homicide data set
 homicide_data = read_csv("./homicidedata.csv", na = c("", "NA", "Unknown")) 
@@ -116,7 +118,7 @@ mutate(solved = as.numeric(disposition == "Closed by arrest"))
                           victim_race != "White" ~ "non-white")) %>%
   mutate(victim_age = as.numeric(victim_age)) %>%
   filter(race != "" & victim_age != "") 
-```
+
 
 
     
@@ -131,11 +133,11 @@ mutate(solved = as.numeric(disposition == "Closed by arrest"))
       disposition == "Open/No arrest"        ~ "unsolved",
       disposition == "Closed by arrest"      ~ "solved"
     )
-```
+    
 %>%
   mutate(race = (victim_race == "White"))
   
-```
+
  
 unique(homicide_citystate$city_state)
 
@@ -143,4 +145,22 @@ unique(homicide_citystate$city_state)
 # Used this function to determine th unique observations within 'disposition'.
 
 unique(homicide_citystate$disposition)
+
+# Problem 2
+
+```{r}
+# Reading in of birthweight dataset and removing ony observations that are missing, NA or Unknown.
+
+birthweight_data = read_csv("./birthweight.csv", na = c("", "NA", "Unknown")) 
+
+birthweight_clean = birthweight_data %>%
+  select(bwt, momage, mrace, smoken, babysex, bhead, blength, gaweeks) 
+
+bw_linear_one = lm(bwt ~ momage + mrace + smoken, data = birthweight_clean)
+
+bw_linear_one %>%
+  broom::tidy()
+
+```
+
 
