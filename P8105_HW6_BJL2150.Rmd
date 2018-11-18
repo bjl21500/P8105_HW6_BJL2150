@@ -160,7 +160,23 @@ bw_linear_one = lm(bwt ~ momage + mrace + smoken, data = birthweight_clean)
 
 bw_linear_one %>%
   broom::tidy()
-
 ```
+
+### Use of add::residuals and add::predictions
+```{r}
+modelr::add_residuals(birthweight_clean, bw_linear_one)
+
+birthweight_clean%>% 
+  modelr::add_residuals(bw_linear_one) %>% 
+  ggplot(aes(x = momage, y = resid)) + geom_point()
+
+
+birthweight_clean%>% 
+  modelr::add_residuals(bw_linear_one) %>% 
+  ggplot(aes(x = mrace, y = resid)) + geom_point()
+
+modelr::add_predictions(birthweight_clean, bw_linear_one)
+```
+
 
 
