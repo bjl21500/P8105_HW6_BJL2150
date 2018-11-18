@@ -148,11 +148,19 @@ unique(homicide_citystate$disposition)
 
 # Problem 2
 
+## Problem 2.1
+
 ```{r}
 # Reading in of birthweight dataset and removing ony observations that are missing, NA or Unknown.
 
 birthweight_data = read_csv("./birthweight.csv", na = c("", "NA", "Unknown")) 
+```
 
+## Problem 2.2
+
+### Linear Regression model for birthweight.
+
+```{r}
 birthweight_clean = birthweight_data %>%
   select(bwt, momage, mrace, smoken, babysex, bhead, blength, gaweeks) 
 
@@ -162,7 +170,10 @@ bw_linear_one %>%
   broom::tidy()
 ```
 
-### Use of add::residuals and add::predictions
+## Problem 2.3
+
+### Add::residuals and add::predictions to plot residuals against fitted values.
+
 ```{r}
 # Using the add::residuals and add:predictions to observe the output for my linear model.
 
@@ -170,6 +181,7 @@ modelr::add_residuals(birthweight_clean, bw_linear_one)
 
 
 modelr::add_predictions(birthweight_clean, bw_linear_one)
+
 
 # Created a scatterplot plotting the residuals against the fitted values.
 
@@ -185,5 +197,14 @@ birthweight_clean%>%
   )
 ```
 
+## Problem 2.3
 
+### Comparison of My model to Two Others.
+
+```{r}
+# The odel that I hypothesized.
+
+bw_linear_one = lm(bwt ~ momage + mrace + smoken, data = birthweight_clean)
+
+```
 
