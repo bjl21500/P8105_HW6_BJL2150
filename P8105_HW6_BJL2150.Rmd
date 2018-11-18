@@ -185,7 +185,7 @@ modelr::add_predictions(birthweight_clean, bw_linear_one)
 
 # Created a scatterplot plotting the residuals against the fitted values.
 
-birthweight_clean%>% 
+birthweight_clean %>% 
   modelr::add_residuals(bw_linear_one) %>% 
   modelr::add_predictions(bw_linear_one) %>%
   ggplot(aes(x = pred, y = resid)) + geom_point() +
@@ -202,17 +202,41 @@ birthweight_clean%>%
 ### Comparison of My Model to Two Others.
 
 ```{r}
-# The odel that I hypothesized.
+# The model that I hypothesized.
 
 bw_linear_one = lm(bwt ~ momage + mrace + smoken, data = birthweight_clean)
 
 # Making of the two comparison models.
 
-length_ges_linear = lm(bwt ~ blength + gaweeks, data = birthweight_clean) %>% 
-  broom::tidy() %>% 
-  knitr::kable(digits = 3)
+length_ges_linear = lm(bwt ~ blength + gaweeks, data = birthweight_clean) 
 
-linear_interaction = lm(bwt ~ bhead + blength + babysex + bhead*blength*babysex, data = birthweight_clean) %>%
-  broom::tidy()
+birthweight_clean %>% 
+  modelr::add_residuals(length_ges_linear) %>% 
+  modelr::add_predictions(length_ges_linear) %>%
+  ggplot(aes(x = pred, y = resid)) + geom_point() +
+    labs(
+    title = "Comparision #1",
+    x = "Fitted Values",
+    y = "Residuals",
+    caption = "Figure 3. Data from birthweight.csv."
+  )
+linear_interaction = lm(bwt ~ bhead + blength + babysex + bhead*blength*babysex,
+                        data = birthweight_clean)
+
+birthweight_clean %>%
+  modelr::add_residuals(linear_interaction) %>%
+  modelr::add_predictions(linear_interaction) %>%
+  ggplot(aes(x = pred, y = resid)) + geom_point()
+```
+
+Comparison_df = birthweight_clean %>% 
+  gather_predictions(bw_linear_one, length_ges_linear, linear_interaction) %>% 
+  mutate(model = fct_inorder(model)) %>% 
+  ggplot(aes(x = pred, y = resid())) + 
+  geom_point() + 
+  geom_line(aes(y = pred), color = "red") + 
+  facet_wrap(~model)
+
+
 
 ```
