@@ -75,64 +75,16 @@ city_state_glm = homicide_citystate %>%
   mutate(models = map(data, ~glm(solved ~ victim_age + race + victim_sex, data = .x, family = binomial())),
 models = map(models, broom::tidy, conf.int = TRUE)) %>%
   select(-data) %>% 
-  unnest()
+  unnest() %>%
+  mutate(OR = exp(estimate),
+       exp_conf_low = exp(conf.low),
+       exp_conf_high = exp(conf.high))
+
+city_state_glm %>%
+  select(city_state, OR, exp_conf_low, exp_conf_high, p.value) %>%
+  knitr::kable(digits = 3)
 ```
 
-output <- df %>%
-  select(-am) %>%
-  names() %>%
-  paste('am~',.) %>%
-  map_df(~tidy(glm(as.formula(.x), 
-               data= df, 
-               family = "binomial"), 
-               conf.int=TRUE, 
-               exponentiate=TRUE))
-               
-manhattan_nest_lm_res =
-  manhattan_airbnb %>% 
-  group_by(neighborhood) %>% 
-  nest() %>% 
-  mutate(models = map(data, ~lm(price ~ stars + room_type, data = .x)),
-         models = map(models, broom::tidy)) %>% 
-  select(-data) %>% 
-  unnest()
-
-data_frame(formulas) %>%
-    mutate(mod = map(formulas, 
-                      ~  glm(as.formula(.),
-                             family = 'binomial', data = mtcars)))
-                             
- my_lm <- function(df){
-    lm(Count ~ Moisture, data = df)
-}
-
-  filter(!city_state %in% c("Dallas, TX", "Phoenix, AZ", "Kansas City, MO", "Tulsa, AL")) %>%
-  select(city_state, victim_race, outcome, victim_age, victim_sex) %>%
-  mutate(race = case_when(victim_race == "White" ~ "white",
-                          victim_race != "White" ~ "non-white")) %>%
-  mutate(victim_age = as.numeric(victim_age)) %>%
-  filter(race != "" & victim_age != "") 
-
-
-
-    
-
-%>% filter(!city_state %in% c("Dallas, TX", "Phoenix, AZ", "Kansas City, MO", "Tulsa, AL")) %>%
-  select(city_state, victim_race, solved, victim_age)
-
-
-
- resolution = case_when(
-      disposition == "Closed without arrest" ~ "unsolved",
-      disposition == "Open/No arrest"        ~ "unsolved",
-      disposition == "Closed by arrest"      ~ "solved"
-    )
-    
-%>%
-  mutate(race = (victim_race == "White"))
-  
-
- 
 unique(homicide_citystate$city_state)
 
 
