@@ -69,7 +69,11 @@ baltimore = homicide_citystate %>%
 ## Using the 'glm' function
 
 logistic_homicide = glm(solved ~ victim_age + race + victim_sex, data = baltimore, family = binomial()) %>%
-  broom::tidy() 
+  broom::tidy(conf.int = TRUE) %>%
+  mutate(OR = exp(estimate)) %>%
+  mutate(conf_low = exp(conf.low)) %>%
+  mutate(conf_high = exp(conf.high))
+  
 ```
 
 logistic_city = homicide_citystate %>%
