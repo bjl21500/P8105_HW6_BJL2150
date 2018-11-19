@@ -73,10 +73,21 @@ city_state_glm = homicide_citystate %>%
   group_by(city_state) %>%
   nest()%>%
   mutate(models = map(data, ~glm(solved ~ victim_age + race + victim_sex, data = .x, family = binomial())),
-models = map(models, broom::tidy)) %>%
+models = map(models, broom::tidy, conf.int = TRUE)) %>%
   select(-data) %>% 
   unnest()
 ```
+
+output <- df %>%
+  select(-am) %>%
+  names() %>%
+  paste('am~',.) %>%
+  map_df(~tidy(glm(as.formula(.x), 
+               data= df, 
+               family = "binomial"), 
+               conf.int=TRUE, 
+               exponentiate=TRUE))
+               
 manhattan_nest_lm_res =
   manhattan_airbnb %>% 
   group_by(neighborhood) %>% 
