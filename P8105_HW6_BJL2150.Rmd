@@ -52,15 +52,8 @@ homicide_citystate = homicide_data %>%
   mutate(victim_age = as.numeric(victim_age)) %>%
   mutate(race = fct_relevel(race, "white")) %>%
   filter(race != "" & victim_age != "")
-
-
-hw6_homicide_citystate = homicide_citystate %>%
-  group_by(city_state) %>%
-  summarize(total_disposition = n(),
-            hom_solved = sum (solved == "1"))
 ```
 
-hom_unsolved = sum(resolution == "unsolved"))
 
 ```{r}
 baltimore = homicide_citystate %>%
@@ -72,24 +65,11 @@ logistic_homicide = glm(solved ~ victim_age + race + victim_sex, data = baltimor
   broom::tidy(conf.int = TRUE) %>%
   mutate(OR = exp(estimate)) %>%
   mutate(conf_low = exp(conf.low)) %>%
-  mutate(conf_high = exp(conf.high))
+  mutate(conf_high = exp(conf.high)) %>%
+  select(term, OR, conf_low, conf_high, p.value)
   
 ```
-
-logistic_city = homicide_citystate %>%
- mutate(new = map(.x = homicide_citystate, ~ glm(solved ~ victim_age + race + victim_sex, data = .x, family = binomial)))
-
-log_regress = function(log){glm(solved ~ victim_age + race + victim_sex, data = .x, family = binomial)}
-
-logistic_city = homicide_citystate %>%
-  mutate(new = map(homicide_citystate, log_regress))
-
-```
-%>%
-  confint.default(object = estimate)
-  mutate(OR = exp(estimate)) %>%
-  
-  data_frame(formulas) %>%
+data_frame(formulas) %>%
     mutate(mod = map(formulas, 
                       ~  glm(as.formula(.),
                              family = 'binomial', data = mtcars)))
@@ -98,27 +78,6 @@ logistic_city = homicide_citystate %>%
     lm(Count ~ Moisture, data = df)
 }
 
-
-```
-
-%>%
-  confint.default(estimate)
-```
-
-  prop.test(x = )
-  mutate(new = map2(.x = estimate, .y = , ~prop.test(x = .x, n = .y)),
-         tidy_tests = map(prop_tests, broom::tidy)) 
-```
-
-
-```{r}
-# Trying something out
-
-twohw6_homicide_citystate = homicide_data %>%
-mutate(city_state = str_c(city, ", " ,state)) %>%
-mutate(solved = as.numeric(disposition == "Closed by arrest"))
-```
-         
   filter(!city_state %in% c("Dallas, TX", "Phoenix, AZ", "Kansas City, MO", "Tulsa, AL")) %>%
   select(city_state, victim_race, outcome, victim_age, victim_sex) %>%
   mutate(race = case_when(victim_race == "White" ~ "white",
