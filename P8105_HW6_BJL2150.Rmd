@@ -1,7 +1,7 @@
 ---
 title: "P8105_HW6_BJL2150"
 author: "Briana Lettsome"
-date: "November 16, 2018"
+date: "November 27th, 2018"
 output: github_document
 ---
 
@@ -30,19 +30,23 @@ homicide_data = read_csv("./homicidedata.csv", na = c("", "NA", "Unknown")) %>%
 The homicide_data  provides information on the numbers of homicides committed within fifty large U.S. cities. Within the dataset, the observations included are the vitcims' first and last name, age, race, city and state that the event transpired in as well as the disposition. The disposition in this context refers to the result of the homicide event. In other words, was the case closed, an arrest made, unsolved, et cetera. 
 
 ## Problem 1.1
-### Making of the city-state variablle and subsequent data manipulation.
+### Making of the city-state variable and subsequent data manipulation.
 
 ```{r}
-# Making of the new variable 'city_state'. Also, created a binary variable from disposition and named this new observation 'solved',  Where 1 = "Closed by arrest" and 0 = "Open/ no arrest" and "Closed without arrest".
+# Making of the new variable 'city_state'. Also, created a binary variable from
+# disposition and named this new observation 'solved',  Where 1 = "Closed by
+# arrest" and 0 = "Open/ no arrest" and "Closed without arrest".
 
-# Using this dataframe to count how many states are in the original dataset prior to filtering out the 4 city_state observations. 
+# Using this dataframe to count how many states are in the original dataset
+# prior to filtering out the 4 city_state observations. 
 
 two_homicide_citystate = homicide_data %>%
   mutate(city_state = str_c(city, ", " , state)) %>%
   mutate(solved = as.numeric(disposition == "Closed by arrest")) %>% 
   count(city_state)  
 
-# This is the working dataframe where the 4 cities were filtered out successfully. I will be using this one ging forward.
+# This is the working dataframe where the 4 cities were filtered out
+# successfully. I will be using this one going forward.
 
 homicide_citystate = homicide_data %>%
   mutate(city_state = str_c(city, ", " , state)) %>% 
@@ -80,6 +84,8 @@ glm(solved ~ victim_age + race + victim_sex, data = baltimore, family = binomial
 ### Running the glm function on all city_state variables.
 
 ```{r}
+# Use of the map function to run glm on all city_state variables.
+
 city_state_glm = homicide_citystate %>%
   group_by(city_state) %>%
   nest()%>%
@@ -90,6 +96,9 @@ models = map(models, broom::tidy, conf.int = TRUE)) %>%
   mutate(OR = exp(estimate),
        exp_conf_low = exp(conf.low),
        exp_conf_high = exp(conf.high))
+
+# Made a tidy table showing onnly the OR estimates, confidence intervals and
+# p-values.
 
 city_state_glm %>%
   select(city_state, OR, exp_conf_low, exp_conf_high, p.value) %>%
