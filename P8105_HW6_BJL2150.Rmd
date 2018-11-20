@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(dplyr)
 library(mgcv)
+library(modelr)
 ```
 
 # Problem 1
@@ -220,12 +221,14 @@ birthweight_clean %>%
   modelr::add_residuals(linear_interaction) %>%
   modelr::add_predictions(linear_interaction) %>%
   ggplot(aes(x = pred, y = resid)) + geom_point()
-```
+
+
 
 validation_df = crossv_mc(birthweight_clean, 100) 
 
 validation_df = validation_df %>%
-  mutate(bw_linear_one = map(train, ~lm(bwt ~ momage + mrace + smoken, data = .x)),
+  mutate(bw_linear_one = map(train, ~lm(bwt ~ momage + mrace + smoken, data = .x)))
+```
          length_ges_linear = map(train, ~lm(bwt ~ blength + gaweeks, data = .x)),
          linear_interaction = map(train, ~lm(bwt ~ bhead + blength + babysex + bhead*blength*babysex, daya = .x)))
                        
