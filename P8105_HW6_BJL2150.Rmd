@@ -111,6 +111,7 @@ city_state_glm %>%
 # Additonally, reordered the 'city_state' variable by the 'estimate' variable.
 
 box_city_state = city_state_glm %>%
+  filter(term == "racenon-white") %>%
   select(city_state, term, OR, exp_conf_low, exp_conf_high) %>%
   mutate(city_state = forcats::fct_reorder(city_state, OR)) %>%
   ggplot(aes(x = city_state, y = OR)) + geom_boxplot() +
