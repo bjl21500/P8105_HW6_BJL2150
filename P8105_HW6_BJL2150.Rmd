@@ -183,7 +183,7 @@ birthweight_clean %>%
   modelr::add_predictions(bw_linear_one) %>%
   ggplot(aes(x = pred, y = resid)) + geom_point() +
     labs(
-    title = "Model Residuals Against Fitted Values",
+    title = "Modelling of Residuals Against Fitted Values",
     x = "Fitted Values",
     y = "Residuals",
     caption = "Figure 2. Data from birthweight.csv."
@@ -221,6 +221,15 @@ birthweight_clean %>%
   modelr::add_predictions(linear_interaction) %>%
   ggplot(aes(x = pred, y = resid)) + geom_point()
 ```
+validation_df = 
+  crossv_mc(birthweight_clean, 100)
+
+cv_df = 
+  crossv_mc(nonlin_df, 100) 
+```
+
+
+
 
 Comparison_df = birthweight_clean %>% 
   gather_predictions(bw_linear_one, length_ges_linear, linear_interaction) %>% 
