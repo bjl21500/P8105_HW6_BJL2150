@@ -221,16 +221,30 @@ birthweight_clean %>%
   modelr::add_predictions(linear_interaction) %>%
   ggplot(aes(x = pred, y = resid)) + geom_point()
 ```
-validation_df = 
-  crossv_mc(birthweight_clean, 100)
+
+validation_df = crossv_mc(birthweight_clean, 100) 
+
+validation_df = validation_df %>%
+  mutate(bw_linear_one = map(train, ~lm(bwt ~ momage + mrace + smoken, data = .x)),
+         length_ges_linear = map(train, ~lm(bwt ~ blength + gaweeks, data = .x)),
+         linear_interaction = map(train, ~lm(bwt ~ bhead + blength + babysex + bhead*blength*babysex, daya = .x)))
+                       
+
+
 
 cv_df = 
   crossv_mc(nonlin_df, 100) 
-```
 
 
 
-
+cv_df = 
+  cv_df %>% 
+  mutate(lin_mod    = map(train, ~lm(y ~ x, data = .x)),
+         nonlin_mod = map(train, ~mgcv::gam(y ~ s(x), data = .x)),
+         wiggly_mod = map(train, ~gam(y ~ s(x, k = 30), sp = 10e-6, data = .x))) %>% 
+  mutate(rmse_lin    = map2_dbl(lin_mod, test, ~rmse(model = .x, data = .y)),
+         rmse_nonlin = map2_dbl(nonlin_mod, test, ~rmse(model = .x, data = .y)),
+         rmse_wiggly = map2_dbl(wiggly_mod, test, ~rmse(model = .x, data = .y)))
 Comparison_df = birthweight_clean %>% 
   gather_predictions(bw_linear_one, length_ges_linear, linear_interaction) %>% 
   mutate(model = fct_inorder(model)) %>% 
