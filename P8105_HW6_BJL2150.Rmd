@@ -101,9 +101,35 @@ models = map(models, broom::tidy, conf.int = TRUE)) %>%
 # p-values.
 
 city_state_glm %>%
-  select(city_state, OR, exp_conf_low, exp_conf_high, p.value) %>%
+  select(city_state, term, OR, exp_conf_low, exp_conf_high, p.value) %>%
   knitr::kable(digits = 3)
 ```
+
+
+```{r}
+# Specifically selected out the estimates and both confidence intervals columns.
+# Additonally, reordered the 'city_state' variable by the 'estimate' variable.
+
+box_city_state = city_state_glm %>%
+  select(city_state, term, OR, exp_conf_low, exp_conf_high) %>%
+  mutate(city_state = forcats::fct_reorder(city_state, OR)) %>%
+  ggplot(aes(x = city_state, y = OR)) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  geom_errorbar(aes(ymin = exp_conf_low, ymax = exp_conf_high))
+
+# Making of the boxplot with the inclusion of error bars for low and high CIs.
+# Used the 'geoom_errorbar' to complete the latter step.
+```
+
+  ggplot(aes(x = city_state, y = estimate)) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
+  labs(
+    title = "Proportion of Unsolved Homicides by City",
+    x = "City",
+    y = "Proportion Estimate",
+    caption = "Figure 2: Data from the Washington Post"
+  )
 
 unique(homicide_citystate$city_state)
 
