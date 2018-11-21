@@ -221,10 +221,13 @@ birthweight_clean %>%
   modelr::add_residuals(linear_interaction) %>%
   modelr::add_predictions(linear_interaction) %>%
   ggplot(aes(x = pred, y = resid)) + geom_point()
+```
 
 
-
-validation_df = crossv_mc(birthweight_clean, 100) 
+```{r}
+validation_df = crossv_mc(birthweight_clean, 100) %>%
+  mutate(train = map(train, as_tibble),
+         test = map(test, as_tibble))
 
 validation_df = validation_df %>%
   mutate(bw_linear_one = map(train, ~lm(bwt ~ momage + mrace + smoken, data = .x)))
@@ -235,10 +238,14 @@ validation_df = validation_df %>%
 
 
 
+
 cv_df = 
   crossv_mc(nonlin_df, 100) 
 
-
+cv_df =
+  crossv_mc(child_growth, 100) %>% 
+  mutate(train = map(train, as_tibble),
+         test = map(test, as_tibble))
 
 cv_df = 
   cv_df %>% 
