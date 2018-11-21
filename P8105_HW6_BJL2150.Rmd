@@ -117,10 +117,20 @@ box_city_state = city_state_glm %>%
   mutate(city_state = forcats::fct_reorder(city_state, OR)) %>%
   ggplot(aes(x = city_state, y = OR)) + geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-  geom_errorbar(aes(ymin = exp_conf_low, ymax = exp_conf_high))
+  geom_errorbar(aes(ymin = exp_conf_low, ymax = exp_conf_high)) + 
+  labs(
+    title = "Adjusted OR and 95% CI for Solving Homicides for Non-White/ White",
+    x = "City, State",
+    y = "Odds Ratio",
+    caption = "Figure 1: Data from the Washington Post"
+  )
 
 # Making of the boxplot with the inclusion of error bars for low and high CIs.
-# Used the 'geoom_errorbar' to complete the latter step.
+# Used the 'geoom_errorbar' to complete the latter step. 
+
+box_city_state 
+
+
 ```
 
   ggplot(aes(x = city_state, y = estimate)) + geom_boxplot() +
