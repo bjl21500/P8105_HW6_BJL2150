@@ -249,13 +249,13 @@ validation_df = validation_df %>%
   mutate(bw_linear_one = map(train, ~lm(bwt ~ momage + mrace + smoken, data = .x)), 
          length_ges_linear = map(train, ~lm(bwt ~ blength + gaweeks, data = .x)), 
          linear_interaction = map(train, ~lm(bwt ~ bhead + blength + babysex + bhead*blength*babysex, data = .x))) %>% 
-  mutate(rmse_lin    = map2_dbl(bw_linear_one, test, ~rmse(model = .x, data = .y)),
-         rmse_length = map2_dbl(length_ges_linear, test, ~rmse(model = .x, data = .y)),
-         rmse_linear = map2_dbl(linear_interaction, test, ~rmse(model = .x, data = .y))) 
+  mutate(rmse_bw_linear = map2_dbl(bw_linear_one, test, ~rmse(model = .x, data = .y)),
+         rmse_length_ges = map2_dbl(length_ges_linear, test, ~rmse(model = .x, data = .y)),
+         rmse_interaction = map2_dbl(linear_interaction, test, ~rmse(model = .x, data = .y))) 
 
 validation_df %>%
   select(.id, starts_with("rmse")) %>%
-  gather(key = model, value = rmse, rmse_lin:rmse_linear) %>%
+  gather(key = model, value = rmse, rmse_bw_linear:rmse_interaction) %>%
   ggplot(aes(x = model, y = rmse)) + geom_violin()
 ```                       
 
