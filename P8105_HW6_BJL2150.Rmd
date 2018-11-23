@@ -133,10 +133,18 @@ box_city_state = city_state_glm %>%
 
 box_city_state 
 ```
+  
+  Figure 2 illustrates the estimate odds ratios and confidence intervals per city.
+Furthermore, these cities were organized by the estimated OR values. 
+  At first glance, the solved estimated oddds of solved homicides for non-white
+individuals varies throughout the region. According to the figure, Boston, MD had
+the smallest odds of solving homicides with the least amount of variability, 
+while Tampa, Fl had the highest odds of solving homicides for non-white individuals.
+However, with the latter, there was quite a bit of variability observed. The city
+with the highest variability in solving homicides for non-white victims compared to
+whites was Durham, NC. This conclusion was made based on the wide errors bars
+surrounding the OR estimate which corrresponds to the 95% confidence intervals.
 
-# Used this function to determine th unique observations within 'disposition'.
-
-unique(homicide_citystate$disposition)
 
 # Problem 2
 
@@ -148,7 +156,7 @@ unique(homicide_citystate$disposition)
 birthweight_data = read_csv("./birthweight.csv", na = c("", "NA", "Unknown")) 
 ```
 
-Description of dataset
+### Description of Dataset
 
 The birthweight dataset includes several variables that are proposed to be risk
 factors for a child's birthweight. Some of the variables include
@@ -169,6 +177,8 @@ bw_linear_one = lm(bwt ~ momage + mrace + smoken, data = birthweight_clean)
 bw_linear_one %>%
   broom::tidy()
 ```
+
+### Proposed Model
 
 The model that I propose includes mother's age at delivery, mother's race, and 
 average number of cigarettes smoked per day during pregnancy. According to the
@@ -205,7 +215,7 @@ birthweight_clean %>%
 
 ## Problem 2.3
 
-### Comparison of My Model to Two Others.
+### Comparison of My Model to the Two Others.
 
 ```{r}
 # The model that I hypothesized.
