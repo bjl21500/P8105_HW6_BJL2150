@@ -252,6 +252,10 @@ validation_df = validation_df %>%
   mutate(rmse_lin    = map2_dbl(bw_linear_one, test, ~rmse(model = .x, data = .y)),
          rmse_length = map2_dbl(length_ges_linear, test, ~rmse(model = .x, data = .y)),
          rmse_linear = map2_dbl(linear_interaction, test, ~rmse(model = .x, data = .y))) 
+
+validation_df %>%
+  select(.id, starts_with("rmse")) %>%
+  gather(key = model, value = rmse, rmse_lin:rmse_linear)
 ```                       
 
 
