@@ -255,7 +255,8 @@ validation_df = validation_df %>%
 
 validation_df %>%
   select(.id, starts_with("rmse")) %>%
-  gather(key = model, value = rmse, rmse_lin:rmse_linear)
+  gather(key = model, value = rmse, rmse_lin:rmse_linear) %>%
+  ggplot(aes(x = model, y = rmse)) + geom_violin()
 ```                       
 
 
