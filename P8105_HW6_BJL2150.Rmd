@@ -31,6 +31,7 @@ homicide_data = read_csv("./homicidedata.csv", na = c("", "NA", "Unknown")) %>%
 The homicide_data  provides information on the numbers of homicides committed within fifty large U.S. cities. Within the dataset, the observations included are the vitcims' first and last name, age, race, city and state that the event transpired in as well as the disposition. The disposition in this context refers to the result of the homicide event. In other words, was the case closed, an arrest made, unsolved, et cetera. 
 
 ## Problem 1.1
+
 ### Making of the city-state variable and subsequent data manipulation.
 
 ```{r}
@@ -62,6 +63,7 @@ homicide_citystate = homicide_data %>%
 ```
 
 ## Problem 1.2
+
 ### Focusing only on Baltomre, MD.
 
 ```{r}
@@ -82,6 +84,7 @@ glm(solved ~ victim_age + race + victim_sex, data = baltimore, family = binomial
 ```
 
 ## Problem 1.3
+
 ### Running the glm function on all city_state variables.
 
 ```{r}
@@ -129,22 +132,7 @@ box_city_state = city_state_glm %>%
 # Used the 'geoom_errorbar' to complete the latter step. 
 
 box_city_state 
-
-
 ```
-
-  ggplot(aes(x = city_state, y = estimate)) + geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-  geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
-  labs(
-    title = "Proportion of Unsolved Homicides by City",
-    x = "City",
-    y = "Proportion Estimate",
-    caption = "Figure 2: Data from the Washington Post"
-  )
-
-unique(homicide_citystate$city_state)
-
 
 # Used this function to determine th unique observations within 'disposition'.
 
@@ -159,6 +147,7 @@ unique(homicide_citystate$disposition)
 
 birthweight_data = read_csv("./birthweight.csv", na = c("", "NA", "Unknown")) 
 ```
+
 Description of dataset
 
 The birthweight dataset includes several variables that are proposed to be risk
@@ -226,6 +215,7 @@ bw_linear_one = lm(bwt ~ momage + mrace + smoken, data = birthweight_clean)
 # Making of the two comparison models.
 
 length_ges_linear = lm(bwt ~ blength + gaweeks, data = birthweight_clean) 
+```
 
 birthweight_clean %>% 
   modelr::add_residuals(length_ges_linear) %>% 
@@ -237,14 +227,17 @@ birthweight_clean %>%
     y = "Residuals",
     caption = "Figure 3. Data from birthweight.csv."
   )
+
+```{r}
 linear_interaction = lm(bwt ~ bhead + blength + babysex + bhead*blength*babysex,
                         data = birthweight_clean)
+```
 
 birthweight_clean %>%
   modelr::add_residuals(linear_interaction) %>%
   modelr::add_predictions(linear_interaction) %>%
   ggplot(aes(x = pred, y = resid)) + geom_point()
-```
+
 
 
 ```{r}
@@ -253,12 +246,13 @@ validation_df = crossv_mc(birthweight_clean, 100) %>%
          test = map(test, as_tibble))
 
 validation_df = validation_df %>%
-  mutate(bw_linear_one = map(train, ~lm(bwt ~ momage + mrace + smoken, data = .x)), length_ges_linear = map(train, ~lm(bwt ~ blength + gaweeks, data = .x)))
-```
-         
-         ,
-         linear_interaction = map(train, ~lm(bwt ~ bhead + blength + babysex + bhead*blength*babysex, daya = .x)))
-                       
+  mutate(bw_linear_one = map(train, ~lm(bwt ~ momage + mrace + smoken, data = .x)), 
+         length_ges_linear = map(train, ~lm(bwt ~ blength + gaweeks, data = .x)), 
+         linear_interaction = map(train, ~lm(bwt ~ bhead + blength + babysex + bhead*blength*babysex, data = .x))) %>% 
+  mutate(rmse_lin    = map2_dbl(bw_linear_one, test, ~rmse(model = .x, data = .y)),
+         rmse_length = map2_dbl(length_ges_linear, test, ~rmse(model = .x, data = .y)),
+         rmse_linear = map2_dbl(linear_interaction, test, ~rmse(model = .x, data = .y))) 
+```                       
 
 
 
