@@ -225,31 +225,13 @@ bw_linear_one = lm(bwt ~ momage + mrace + smoken, data = birthweight_clean)
 # Making of the two comparison models.
 
 length_ges_linear = lm(bwt ~ blength + gaweeks, data = birthweight_clean) 
-```
 
-birthweight_clean %>% 
-  modelr::add_residuals(length_ges_linear) %>% 
-  modelr::add_predictions(length_ges_linear) %>%
-  ggplot(aes(x = pred, y = resid)) + geom_point() +
-    labs(
-    title = "Comparision #1",
-    x = "Fitted Values",
-    y = "Residuals",
-    caption = "Figure 3. Data from birthweight.csv."
-  )
 
-```{r}
 linear_interaction = lm(bwt ~ bhead + blength + babysex + bhead*blength*babysex,
                         data = birthweight_clean)
 ```
 
-birthweight_clean %>%
-  modelr::add_residuals(linear_interaction) %>%
-  modelr::add_predictions(linear_interaction) %>%
-  ggplot(aes(x = pred, y = resid)) + geom_point()
-
-
-
+This code chunk is used tocreate the cross-validated predicted error
 ```{r}
 validation_df = crossv_mc(birthweight_clean, 100) %>%
   mutate(train = map(train, as_tibble),
@@ -273,7 +255,13 @@ validation_df %>%
     y = "Root Mean Square Error",
     caption = "Figure 3. Data from birthweight.csv"
   )
-```                       
+``` 
+
+In looking at Figure 3, the model that I proposed, named rmse_bw_linear, on the 
+plot, had the highest root mean square of the three models. Again, the predictors
+added to this model are mother's age at delivery, mother's race, and average number
+of cigarettes smoked per day during pregnancy. As such, the conclusion can be made
+that this model inappropriate.
 
 
 
