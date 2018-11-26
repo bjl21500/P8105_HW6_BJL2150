@@ -231,7 +231,7 @@ linear_interaction = lm(bwt ~ bhead + blength + babysex + bhead*blength*babysex,
                         data = birthweight_clean)
 ```
 
-This code chunk is used tocreate the cross-validated predicted error
+The below code chunk is used to create the cross-validated predicted error and assess the differences.
 ```{r}
 validation_df = crossv_mc(birthweight_clean, 100) %>%
   mutate(train = map(train, as_tibble),
