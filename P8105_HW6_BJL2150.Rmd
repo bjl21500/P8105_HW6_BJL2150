@@ -28,17 +28,18 @@ homicide_data = read_csv("./homicidedata.csv", na = c("", "NA", "Unknown")) %>%
 
 ### Description of the homicide dataset:
 
-The homicide_data  provides information on the numbers of homicides committed within fifty large U.S. cities. Within the dataset, the observations included are the vitcims' first and last name, age, race, city and state that the event transpired in as well as the disposition. The disposition in this context refers to the result of the homicide event. In other words, was the case closed, an arrest made, unsolved, et cetera. 
+The homicide_data provides information on the numbers of homicides committed within fifty large U.S. cities. Within the dataset, the observations included are the vitcims' first and last name, age, race, city and state that the event transpired in as well as the disposition. The disposition in this context refers to the result of the homicide event. In other words, was the case closed, an arrest made, unsolved, et cetera. 
 
 ## Problem 1.1
 
 ### Making of the city-state variable and subsequent data manipulation.
 
-```{r}
-# Making of the new variable 'city_state'. Also, created a binary variable from
-# disposition and named this new observation 'solved',  Where 1 = "Closed by
-# arrest" and 0 = "Open/ no arrest" and "Closed without arrest".
 
+In the code chunk below, the new variable 'city_state' was created. Also created
+was a binary variable for disposition which was named 'solved'. In this variable,
+1 = "Closed by arrest" and 0 = "Open/ no arrest" and "Closed without arrest".
+
+```{r}
 # Using this dataframe to count how many states are in the original dataset
 # prior to filtering out the 4 city_state observations. 
 
@@ -67,7 +68,7 @@ homicide_citystate = homicide_data %>%
 ### Focusing only on Baltomre, MD.
 
 ```{r}
-# Filtering out of Baltimore, MD observation.
+# Filtering out Baltimore, MD observations.
 
 baltimore = homicide_citystate %>%
   filter(city_state == "Baltimore, MD")
@@ -88,7 +89,7 @@ glm(solved ~ victim_age + race + victim_sex, data = baltimore, family = binomial
 ### Running the glm function on all city_state variables.
 
 ```{r}
-# Use of the map function to run glm on all city_state variables.
+# Using of the map function to run 'glm' on all city_state variables.
 
 city_state_glm = homicide_citystate %>%
   group_by(city_state) %>%
@@ -101,7 +102,7 @@ models = map(models, broom::tidy, conf.int = TRUE)) %>%
        exp_conf_low = exp(conf.low),
        exp_conf_high = exp(conf.high))
 
-# Made a tidy table showing onnly the OR estimates, confidence intervals and
+# Made a tidy table showing only the OR estimates, confidence intervals and
 # p-values.
 
 city_state_glm %>%
@@ -111,7 +112,7 @@ city_state_glm %>%
 
 
 ```{r}
-# Specifically selected out the estimates and both confidence intervals columns.
+# Specifically selected out the estimates and confidence interval columns.
 # Additonally, reordered the 'city_state' variable by the 'estimate' variable.
 
 box_city_state = city_state_glm %>%
@@ -129,12 +130,12 @@ box_city_state = city_state_glm %>%
   )
 
 # Making of the boxplot with the inclusion of error bars for low and high CIs.
-# Used the 'geoom_errorbar' to complete the latter step. 
+# Used the 'geoom_errorbar' to complete this latter step. 
 
 box_city_state 
 ```
   
-  Figure 2 illustrates the estimate odds ratios and confidence intervals per city.
+  Figure 2 illustrates the estimated odds ratios and confidence intervals per city.
 Furthermore, these cities were organized by the estimated OR values. 
   At first glance, the solved estimated oddds of solved homicides for non-white
 individuals varies throughout the region. According to the figure, Boston, MD had
@@ -159,16 +160,18 @@ birthweight_data = read_csv("./birthweight.csv", na = c("", "NA", "Unknown"))
 ### Description of Dataset
 
 The birthweight dataset includes several variables that are proposed to be risk
-factors for a child's birthweight. Some of the variables include
-gestatioal age in weeks, baby's sex, baby's head cifrcumference, baby's birth
-weight, family monthly income, mother's age at delivery and average number of
-cigarettes smoked per day during pregnancy.
+factors for newborn's birthweight. Some of the variables include gestational age 
+in weeks, baby's sex, baby's head circumference, baby's birth weight, family 
+monthly income, mother's age at delivery and average number of cigarettes smoked 
+per day during pregnancy. This dataset will be used in Problem 2.
 
 ## Problem 2.2
 
 ### Linear Regression model for birthweight.
 
 ```{r}
+# My proposed linear regression model.
+
 birthweight_clean = birthweight_data %>%
   select(bwt, momage, mrace, smoken, babysex, bhead, blength, gaweeks) 
 
@@ -180,12 +183,12 @@ bw_linear_one %>%
 
 ### Proposed Model
 
-The model that I propose includes mother's age at delivery, mother's race, and 
+  The model that I propose includes mother's age at delivery, mother's race, and 
 average number of cigarettes smoked per day during pregnancy. According to the
 Children's Hospital of Philadelphia, there are four risk factors for child's
-birthweight. From this, I chose to iclude the aformentioned predictors. In
-running a linear regression model, there was an observed statistical
-significance for all of the predictors. Therefore, they remained within my hypothesized linear model.
+birthweight. From this, I chose to include three of the four risk factors, which 
+are the aformentioned predictors. In running a linear regression model, there was 
+an observed statistical significance for all of the predictors. Therefore, they remained within my hypothesized linear model.
 
 ## Problem 2.3
 
@@ -193,6 +196,7 @@ significance for all of the predictors. Therefore, they remained within my hypot
 
 ```{r}
 # Using the add::residuals and add:predictions to observe the output for my linear model.
+
 modelr::add_residuals(birthweight_clean, bw_linear_one)
 
 
@@ -215,7 +219,7 @@ birthweight_clean %>%
 
 ## Problem 2.3
 
-### Comparison of My Model to the Two Others.
+### Comparison of My Model to the Two Other Models.
 
 ```{r}
 # The model that I hypothesized.
@@ -257,11 +261,11 @@ validation_df %>%
   )
 ``` 
 
-In looking at Figure 3, the model that I proposed, named rmse_bw_linear, on the 
+  In looking at Figure 3, the model that I proposed, named rmse_bw_linear, on the 
 plot, had the highest root mean square of the three models. Again, the predictors
-added to this model are mother's age at delivery, mother's race, and average number
-of cigarettes smoked per day during pregnancy. As such, the conclusion can be made
-that this model inappropriate.
+added to my proposed model are mother's age at delivery, mother's race, and average
+number of cigarettes smoked per day during pregnancy. Due to the high root mean 
+square value, the conclusion can be made that this model inappropriate.
 
 
 
