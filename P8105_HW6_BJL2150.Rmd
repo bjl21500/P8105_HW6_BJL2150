@@ -21,7 +21,8 @@ library(modelr)
 ### Description of the homicide dataset:
 
 The homicide_data  provides information on the numbers of homicides committed within fifty large U.S. cities. Within the dataset, the observations included are the vitcims' first and last name, age, race, city and state that the event transpired in as well as the disposition. The disposition in this context refers to the result of the homicide event. In other words, was the case closed, an arrest made, unsolved, et cetera. This dataset will be read in and subsequently manipulated to complete
-Problem #1.
+Problem #1. The main objective is to determine, among non-whites and whites, which
+group has the largest number of solved homicides.
 
 ```{r}
 # Reading in and cleaning of the homicide dataset.
@@ -155,7 +156,7 @@ surrounding the OR estimate which corrresponds to the 95% confidence intervals.
 
 The birthweight dataset includes several variables that are proposed to be risk
 factors for a child's birthweight. Some of the variables include
-gestatioal age in weeks, baby's sex, baby's head cifrcumference, baby's birth
+gestatioal age in weeks, baby's sex, baby's head circumference, baby's birth
 weight, family monthly income, mother's age at delivery and average number of
 cigarettes smoked per day during pregnancy. This dataset will be imported in order
 to address the questions in Problem 2. A proposed model will be created and 
@@ -265,8 +266,10 @@ validation_df %>%
 In looking at Figure 3, the model that I proposed, named rmse_bw_linear, on the 
 plot, had the highest root mean square of the three models. Again, the predictors
 added to this model are mother's age at delivery, mother's race, and average number
-of cigarettes smoked per day during pregnancy. As such, the conclusion can be made
-that this model inappropriate.
+of cigarettes smoked per day during pregnancy. As such, on average, the data 
+differs a lot from the predicted values. In looking at the figure, I would lean
+towards the model that is looking at the interaction among predictors
+(rmse_interaction) since the root mean square is lower. 
 
 
 
